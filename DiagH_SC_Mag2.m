@@ -81,7 +81,8 @@ for n=1:n_max
     H(beginidx+1:beginidx+2*N_layer,beginidx+1:beginidx+2*N_layer)=Htemp;   
 
 end
-    
+H
+pause
     [V,E]=eig(H);    
     outputV(:,:)=V;
 
@@ -101,8 +102,8 @@ end
                 
                 
                 outputH_0=zeros(N_size);                
-                outputH_0(1,2)=gamma1;outputH_0(2,1)=gamma1;
-                outputH_0(2,3)=Offdiag(1);outputH_0(3,2)=Offdiag(1);
+                outputH_0(2,3)=gamma1;outputH_0(3,2)=gamma1;
+                outputH_0(3,4)=Offdiag(1);outputH_0(4,3)=Offdiag(1);
                 
             case 4
             case 5

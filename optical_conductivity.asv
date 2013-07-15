@@ -2,7 +2,7 @@ clear all;
 
 
 
-n_max=10;
+n_max=5;
 B=28;
 
 
@@ -17,7 +17,7 @@ A=zeros(1,10);
 
 gamma1=0.39;
 gamma0=3.16;
-eta=8/1000;
+eta=10/1000;
 hwS=0:0.001:gamma1*2.5;
 y=zeros(size(hwS,2),1);
 % hwS=0.39:0.001:0.468;
@@ -32,33 +32,35 @@ num_bands=N_size+2*N_layer*n_max;
 R=zeros(size(hwS,2),N_size+2*N_layer*n_max,N_size+2*N_layer*n_max);
 I=zeros(size(hwS,2),N_size+2*N_layer*n_max,N_size+2*N_layer*n_max);
 for cnt=1:size(hwS,2);
-
     hw=hwS(cnt);
     
-    [y(cnt), tempM,tempM2]=nonzeroopdc_mag_xx(indc,E,V,B,v0,eta,num_bands,hw,n_max,Ef);    
-%     R(cnt,:,:)=tempM;
-%     I(cnt,:,:)=tempM2;
-
+    [y(cnt), tempM,tempM2]=nonzeroopdc_mag_xx(indc,E,V,B,v0,eta,num_bands,hw,n_max,Ef);
+    R(cnt,:,:)=tempM;
+    I(cnt,:,:)=tempM2;
+    
 end
-y=y/unit;
-
-plot(hwS/gamma1,y)
 % graph_draw
+R=R/unit;
+A=zeros(size(hwS,2),num_bands*num_bands);
+B=zeros(size(hwS,2),num_bands*num_bands);
+for hwcnt=1:size(hwS,2)
+    
+    i=0;
+    for n=1:num_bands
+        for m=1:num_bands
+            i=i+1;    
+            A(hwcnt,i)=A(hwcnt,i)+R(hwcnt,n,m)/2;            
+        end
+    end 
+    if bs(A(hwcnt,i))<0.1
+        A(hwcnt,i)=0;
+    end
+       
+    
+end
 
+plot(hwS/gamma1,real(y)/unit);
+hold on;
 
-%----------------------------- Analysis -----------------------------------
-% R=R/unit;
-% A=zeros(size(hwS,2),num_bands*num_bands);
-% B=zeros(size(hwS,2),num_bands*num_bands);
-% for hwcnt=1:size(hwS,2)
-%     
-%     i=0;
-%     for n=1:num_bands
-%         for m=1:num_bands
-%             i=i+1;    
-%             A(hwcnt,i)=A(hwcnt,i)+R(hwcnt,n,m)/2;            
-%         end
-%     end      
-%     
-% end
-% area(hwS/gamma1,A)
+% plot(hwS/gamma1,imag(y)/unit,'-r')
+

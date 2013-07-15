@@ -1,5 +1,6 @@
-function[output]=nonzeroopdc_mag_xx(indc,E,V,B,v0,eta,num_bands,hw,n_max,Ef)
-    
+function[output,outputR,outputI]=nonzeroopdc_mag_xx(indc,E,V,B,v0,eta,num_bands,hw,n_max,Ef)                                                   
+    outputR=zeros(num_bands);
+    outputI=zeros(num_bands);    
     [HO_state,HO_spin]=HO_func(indc);
     N=wksp.Nband(indc);
     hevbar=wksp.hevbar;    
@@ -13,25 +14,31 @@ function[output]=nonzeroopdc_mag_xx(indc,E,V,B,v0,eta,num_bands,hw,n_max,Ef)
     const=-dgnrcy*wksp.e^2/(2*pi*wksp.hbar*length^2);  %- 부호 다름(xy인 경우)    
     sumR=0;
     sumI=0;
+    
     for n=1:num_bands
-        if E(n)<Ef
-            for m=1:num_bands            
-                [tempR,tempI]=core(n);
-                sumR=sumR+tempR;
-                sumI=sumI+tempI;
-                if E(n)==Ef
-                    sumR=sumR-tempR/2;
-                    sumI=sumI-tempI/2;
-                end
-            end
+        if E(n)<Ef            
+%             fn=1./(1.+exp((E(n)-Ef)*(99999999999999999999999999)));            
+            [tempR,tempI,outputR(n,:),outputI(n,:)]=core(n);
+            
+            sumR=sumR+tempR;
+            sumI=sumI+tempI;
+%             if E(n)==Ef
+%                 sumR=sumR-tempR/2;
+%                 sumI=sumI-tempI/2;
+%             end
         end
     end
     output=(sumR+1i*sumI)*const;
-    
+    outputR=outputR*const;
+    outputI=outputI*const;
+   
+
 %-------------------------inline functions---------------------------------
-function[output_R, output_I]=core(n)
+function[output_R, output_I,output_an_R,output_an_I]=core(n)
     output_R=0;
     output_I=0;
+    output_an_R=zeros(1,num_bands);
+    output_an_I=zeros(1,num_bands);
     for m=1:num_bands
         if m~=n
             cntr=V(:,n)'*Vx*V(:,m);             
@@ -52,8 +59,10 @@ function[output_R, output_I]=core(n)
             A=cntr^2;            
             output_R=output_R+A*front_r-A*back_r;
             output_I=output_I+A*front_i-A*back_i;
+%             output_an_R(m)=A*front_r-A*back_r;
+%             output_an_I(m)=A*front_i-A*back_i;
         end
-    end
+    end    
 end
 
 function[output,outputSpin]=HO_func(indc)

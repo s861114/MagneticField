@@ -37,7 +37,7 @@ classdef wksp
         color=char('red','green','yellow','blue','red','yellow');
         Nlayer=[1 2 2 3 3 4 4 4 4 5 5 5 5 5 5 5 5]; %Number of layers
         Nband=2*[1 2 2 3 3 4 4 4 4 5 5 5 5 5 5 5 5]; %Number of bands
-        size_H=[1 3 2 5 4];
+        size_H=[1 4 2 5 4];
         
         datafolder=char('data_nointra');
         

@@ -15,7 +15,7 @@ function[output]=nonzeroopdc_mag(indc,E,V,B,v0,eta,num_bands,hw,n_max,Ef)
     sum=0;
     
     for n=1:num_bands
-        if E(n)<Ef
+        if E(n)<=Ef
 %         fn=1./(1.+exp((E(n)-Ef+0.00000000000000000000000001)*inf));        
             sum=sum+core(n);
         end
@@ -28,12 +28,12 @@ function[output_in]=core(n)
     for m=1:num_bands
         if m~=n
             cntr1_f=V(:,n)'*Vx*V(:,m);
-            cntr2_f=V(:,m)'*Vx*V(:,n);
+            cntr2_f=V(:,m)'*Vy*V(:,n);
              
 %             cntr1_f=contraction(V(:,n),Vx,V(:,m));
 %             cntr2_f=contraction(V(:,m),Vy,V(:,n));  
             cntr1_b=V(:,m)'*Vx*V(:,n);
-            cntr2_b=V(:,n)'*Vx*V(:,m);  
+            cntr2_b=V(:,n)'*Vy*V(:,m);  
             
             
             denomf=( E(n)-E(m) )*( E(n)-E(m)+ hw+1i*eta);
